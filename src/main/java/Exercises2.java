@@ -1,7 +1,5 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class Exercises2 {
 
@@ -14,7 +12,18 @@ public class Exercises2 {
     */
 
     public int[] twoSum(int[] nums, int target) {
-        // TODO
+        int[] answer = new int[2];
+        int arrayLength = nums.length;
+        for (int i = 0; i < arrayLength - 1; i++) {
+            for (int j = i + 1; j < arrayLength; j++) {
+                if (nums[i] + nums[j] == target) {
+                    answer[0] = i;
+                    answer[1] = j;
+                    return answer;
+                }
+            }
+        }
+
         return null;
     }
 
@@ -47,23 +56,101 @@ public class Exercises2 {
 
     Given a roman numeral, convert it to an integer.
     */
-
+//    public
     public int romanToInt(String s) {
-        // TODO
-        return 0;
+        int sum = 0;
+        int position;
+        String[] specialCombination = {"IV", "IX", "XL", "XC", "CD", "CM"};
+        int[] numOfFrequences = {0, 0, 0, 0, 0, 0};
+        int[] values = {4, 9, 40, 90, 400, 900};
+        for (int i = 0; i < 6; i++) {
+            String nextPart = s;
+            position = nextPart.indexOf(specialCombination[i]);
+
+            while (position != -1) {
+                numOfFrequences[i]++;
+                nextPart = nextPart.substring(position + 2);
+                position = nextPart.indexOf(specialCombination[i]);
+            }
+            s = s.replace(specialCombination[i], "0");
+            sum += numOfFrequences[i] * values[i];
+        }
+        return normalSum(s, sum);
+
+    }
+
+    public int normalSum(String s, int sum) {
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            switch (s.charAt(i)) {
+                case 'I':
+                    sum += 1;
+                    break;
+                case 'V':
+                    sum += 5;
+                    break;
+                case 'X':
+                    sum += 10;
+                    break;
+                case 'L':
+                    sum += 50;
+                    break;
+                case 'C':
+                    sum += 100;
+                    break;
+                case 'D':
+                    sum += 500;
+                    break;
+                case 'M':
+                    sum += 1000;
+                    break;
+            }
+        }
+        return sum;
     }
 
     /*
     Given an array nums of distinct integers, return all the possible permutations.
     You can return the answer in any order.
     */
+    public static List<List<Integer>> InsertIndex(int numOfIndice, int indexToInsert, List<List<Integer>> mainList) {
+        List<List<Integer>> tempList = new LinkedList<>();
+        for (List<Integer> listToBeingInserted : mainList) {
+            List<Integer> tempListToBeingInserted = listToBeingInserted ;
+            for (int insertPlace = 0; insertPlace <= numOfIndice; insertPlace++) {
+                listToBeingInserted.add(insertPlace, indexToInsert);
+                tempList.add(listToBeingInserted);
+//                listToBeingInserted.remove(insertPlace);
+                listToBeingInserted = tempListToBeingInserted;
+            }
+        }
+        mainList = tempList;
 
-    public List<List<Integer>> permute(int[] nums) {
-        // TODO
-        return null;
+        return mainList;
+    }
+
+    public static List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> mainList = new LinkedList<>();
+        List<Integer> firstList = new LinkedList<>();
+        firstList.add(nums[0]);
+        mainList.add(firstList);
+        int numOfIndice = nums.length;
+        for (int i = 1; i < numOfIndice; i++) {         //the itereator begins from 1 because I manually added nums[0]
+            int indexToInsert = nums[i];
+            mainList = InsertIndex(i, indexToInsert, mainList);
+        }
+        return mainList;
     }
 
     public static void main(String[] args) {
-        // test your code here!
+        //******
+        permute(new int[]{1, 2, 3});
+//        for(List<Integer> i : permute(new int[] {1, 2, 3}){
+//            for( Integer j : i){
+//
+//            }
+//            System.out.println(i.toString());
+//        }
+//
     }
 }
